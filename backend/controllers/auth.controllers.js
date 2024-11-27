@@ -1,11 +1,11 @@
-import { User } from "../models/user.model";
-import { bcrypt } from "bcryptjs";
-import { generateJwtTokenAndSetCookie } from "../utils/generateJwtTokenAndSetCookie";
+import { User } from "../models/user.model.js";
+import bcrypt from "bcryptjs";
+import { generateJwtTokenAndSetCookie } from "../utils/generateJwtTokenAndSetCookie.js";
 
 export const signup = async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, name, password } = req.body;
   try {
-    if (!email || !password || !name) {
+    if (!email || !password) {
       throw new Error("All Fields ae Required");
     }
 
@@ -15,32 +15,28 @@ export const signup = async (req, res) => {
         .status(400)
         .json({ success: false, message: "User Already Exists!" });
     }
-    const hashesdPassword = await bcrypt.hash(password, 10);
-    const verificationToken = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
-    const user = User({
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
       email,
-      password: hashesdPassword,
       name,
-      verificationToken,
-      verificationTokenExpiresAt: Date.now() * 24 * 60 * 60 * 1000, // 24 hours
+      password: hashedPassword,
     });
 
-    await user.save();
+    await newUser.save();
 
     // jwt
-    generateJwtTokenAndSetCookie(res, user._id);
+    generateJwtTokenAndSetCookie(res, newUser._id);
 
     res.status(201).json({
       success: true,
       message: "User Created Successfully",
-      user: {
-        ...user._doc,
-        password: undefined,
-      },
+      user: newUser,
     });
-  } catch (error) {}
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
 };
 export const login = async (req, res) => {
   res.send("This is login Page");
