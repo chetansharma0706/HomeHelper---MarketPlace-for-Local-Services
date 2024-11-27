@@ -8,11 +8,11 @@ const Hero = () => {
             backgroundImage: `url(https://ideogram.ai/assets/image/lossless/response/EmpmkofUSHeUtlti83AdBg)`,
           }}
         >
-          <div className="absolute inset-0 bg-black opacity-80 rounded-3xl"></div>
+          <div className="absolute inset-0 bg-black opacity-85 rounded-3xl"></div>
         </div>
         <div className="absolute inset-0 w-[80%] flex flex-col items-center justify-start text-center text-white px-4 pt-32 mx-auto md:w-[68%]">
           {/* Hero Title */}
-          <h1 className="text-3xl font-semibold leading-tight md:text-5xl mb-8">
+          <h1 className="text-3xl font-bold leading-tight md:text-5xl mb-8">
             Search for reliable home services near you.
           </h1>
 

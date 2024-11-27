@@ -3,7 +3,7 @@ import React from "react";
 const Popular = () => {
   return (
     <>
-      <section id="popular-service" className="my-10">
+      <section id="popular-service" className="my-10 text-gray-900">
         <h1 className="text-3xl font-semibold leading-tight md:text-5xl text-start">
           Popular Services <i class="ri-arrow-right-up-line"></i>
         </h1>
