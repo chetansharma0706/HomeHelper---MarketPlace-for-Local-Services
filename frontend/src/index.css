@@ -8,7 +8,10 @@
   line-height: 1.5;
   font-weight: 600;
   font-synthesis: none;
-  background-color: #e5e7eb;
+
+  /* background-color: #ffffff; */
+  /* background-color: rgb(2, 32, 109); */
+  background-color: #ececec;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -18,4 +21,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
 }

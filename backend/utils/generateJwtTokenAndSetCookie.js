@@ -10,7 +10,7 @@ export const generateJwtTokenAndSetCookie = (res, userId) => {
     httpOnly: true, // This prevents JavaScript from accessing the cookie
     secure: process.env.NODE_ENV === "production", // Only sends the cookie over HTTPS in production
     sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // Sets the cookie expiry to 7 days (in milliseconds)
+    maxAge: 24 * 60 * 60 * 1000, // Sets the cookie expiry to 1 day (in milliseconds)
   });
 
   return token;

@@ -2,10 +2,13 @@ import { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../contexts/authContexts';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import Loader from '../components/loader';
 
 const Signup = () => {
 
     const { setIsLogin, setUserDetails } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -38,20 +41,9 @@ const Signup = () => {
         }
     };
 
-    const handleSignUp = (e) => {
+    const handleSignUp = async (e) => {
         e.preventDefault();
-
-        // Get users from local storage
-        const users = JSON.parse(localStorage.getItem("users")) || [];
-
-        // Check if email already exists
-        const userExists = users.some((user) => user.email === formData.email);
-        if (userExists) {
-            toast.error("User already exists. Please use a different email.");
-            return;
-        }
-
-        // Save user to local storage
+        setIsLoading(true)
         const newUser = {
             name: formData.name,
             email: formData.email,
@@ -60,12 +52,33 @@ const Signup = () => {
             description: isSeller ? formData.description : "",
             isSeller,
         };
-        localStorage.setItem("users", JSON.stringify([...users, newUser]));
-        setIsLogin(true);
-        setUserDetails(newUser);
-        navigate("/");
-        toast.success("Account created successfully!");
+        try {
+            const response = await axios.post("http://localhost:5000/api/auth/signup", newUser, { withCredentials: true });
+            if (response.data.success) {
+                setIsLogin(true);
+                setUserDetails(response.data.user);
+                navigate("/");
+                toast.success("Account created successfully!");
+                setIsLoading(false)
+            } else {
+                // Executes when the request completes successfully, but the server responds with an error status or message.
+                toast.error('Signup failed:', response.data.message);
+                setIsLoading(false)
+            }
+
+        } catch (e) {
+            // Executes when there’s an unexpected issue that prevents the request from completing.
+            // For example, network issues, server is down, 
+            toast.error('Error during signup:', e);
+            setIsLoading(false)
+        }
+
+
     };
+
+    if (isLoading) {
+        return <Loader />;
+    }
 
 
     return (
@@ -87,21 +100,21 @@ const Signup = () => {
                             </div>
 
                             {/* Google Sign In */}
-                            <button className="flex items-center justify-center w-full py-2 px-4 my-6 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryColor">
+                            {/* <button className="flex items-center justify-center w-full py-2 px-4 my-6 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryColor">
                                 <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
                                     <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
                                 </svg>
                                 <p className="font-semibold">Google</p>
-                            </button>
+                            </button> */}
                         </div>
 
                         <div className="relative">
                             <div className="absolute inset-0 flex items-center">
                                 <div className="w-full border-t border-gray-300"></div>
                             </div>
-                            <div className="relative flex justify-center text-sm">
+                            {/* <div className="relative flex justify-center text-sm">
                                 <span className="px-2 bg-white text-gray-500">Or continue with</span>
-                            </div>
+                            </div> */}
                         </div>
 
                         <form onSubmit={handleSignUp} className="mt-8 space-y-6">
@@ -168,7 +181,7 @@ const Signup = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            {/* <div className="flex items-center justify-between">
                                 <div className="flex items-center">
                                     <input
                                         id="remember-me"
@@ -178,7 +191,7 @@ const Signup = () => {
                                     />
                                     <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">Remember me</label>
                                 </div>
-                            </div>
+                            </div> */}
 
                             {/* Seller Toggle */}
                             <div className="mt-3">
